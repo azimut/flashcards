@@ -1,14 +1,16 @@
 #!/bin/bash
 # Reference: https://github.com/taeram/zen-wallpaper
 
-#BPOINTSIZE=200
-#SPOINTSIZE=30
+# Default font size, this value is later changed according to the image size
+# however it will be used for the default black background
 BPOINTSIZE=400
 SPOINTSIZE=40
 
+# Make sure to have your fonts installed here
 FONT_PATH='/usr/share/fonts/TTF/sazanami-gothic.ttf'
 FONT_PATH='/usr/share/fonts/TTF/sazanami-mincho.ttf'
 
+echoerr() { echo "$@" 1>&2; }
 usage(){
     cat <<EOF
 Usage: $0 [-hkj] [-b]
@@ -19,7 +21,9 @@ Usage: $0 [-hkj] [-b]
 EOF
 }
 
-echoerr() { echo "$@" 1>&2; }
+# EXIT if not argument was given
+[[ $# -eq 0 ]] && { echoerr 'Error: argument missing.'; usage; exit 1; }
+
 check_in_path(){
     local cmd=$1
     hash "$cmd" &>/dev/null || {
@@ -28,12 +32,12 @@ check_in_path(){
     }
 }
 
+# checking dependencies
 check_in_path 'feh'
 check_in_path 'convert'
 check_in_path 'identify'
 
-[[ $# -eq 0 ]] && { echoerr 'Error: argument missing.'; usage; exit 1; }
-
+# load arrays with flashcards definitions
 for i in ./arrays/*; do source $i; done
 
 while getopts ':hkjigb:f' opt; do
