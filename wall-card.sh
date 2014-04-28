@@ -8,7 +8,7 @@ SPOINTSIZE=40
 
 # Make sure to have your fonts installed here
 FONT_PATH='/usr/share/fonts/TTF/sazanami-gothic.ttf'
-FONT_PATH='/usr/share/fonts/TTF/sazanami-mincho.ttf'
+#FONT_PATH='/usr/share/fonts/TTF/sazanami-mincho.ttf'
 
 echoerr() { echo "$@" 1>&2; }
 usage(){
@@ -17,6 +17,8 @@ Usage: $0 [-hkj] [-b]
 -h use the hiragana character set
 -k use the katakana character set
 -j use the kanji values
+-p japanese phrases
+-e eng phrases
 -b use the provided image as background instead of the default
 EOF
 }
@@ -40,7 +42,7 @@ check_in_path 'identify'
 # load arrays with flashcards definitions
 for i in ./arrays/*; do source $i; done
 
-while getopts ':hkjigb:f' opt; do
+while getopts ':hkjigpeb:f' opt; do
     case $opt in
         h)
             rand_char=$(echo ${!hiragana[@]} | tr ' ' '\n' | shuf -n1)
@@ -57,6 +59,14 @@ while getopts ':hkjigb:f' opt; do
         g)
             rand_char=$(echo ${!go_terms[@]} | tr ' ' '\n' | shuf -n1)
             rand_desc=${go_terms[$rand_char]}
+            ;;
+        p)
+            rand_char=$(echo ${!j_phrases[@]} | tr ' ' '\n' | shuf -n1)
+            rand_desc=${j_phrases[$rand_char]}
+            ;;
+        e)
+            rand_char=$(echo ${!eng_phrases[@]} | tr ' ' '\n' | shuf -n1)
+            rand_desc=${eng_phrases[$rand_char]}
             ;;
         b)  
             [[ -f $OPTARG ]] && {
@@ -93,7 +103,7 @@ done
 # if any image was provided calculate the font size from there
 [[ ! -z $IMAGE_SOURCE ]] && {
     WIDTH=$(identify $IMAGE_SOURCE | cut -f3 -d ' ' | cut -f2 -d'x')
-    BPOINTSIZE=$((WIDTH/7))  # some arbitrary value
+    BPOINTSIZE=$((WIDTH/6))  # some arbitrary value
     SPOINTSIZE=$((WIDTH/35)) # some arbitrary value
 }
 
