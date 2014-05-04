@@ -11,4 +11,5 @@ j_phrases=(
     ['それは なん ですか']='que es eso?'
     ['あれは なん ですか']='que es aquello?'
     ['すみません']='excuse me'
+    ['そう です か']='afirmacion - ah si.'
 )

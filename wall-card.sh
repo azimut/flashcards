@@ -5,7 +5,7 @@
 # however it will be used for the default black background
 BPOINTSIZE=400
 SPOINTSIZE=40
-
+array_feh_bg=( feh --bg-fill )
 # Make sure to have your fonts installed here
 FONT_PATH='/usr/share/fonts/TTF/sazanami-gothic.ttf'
 #FONT_PATH='/usr/share/fonts/TTF/sazanami-mincho.ttf'
@@ -38,6 +38,15 @@ check_in_path(){
 check_in_path 'feh'
 check_in_path 'convert'
 check_in_path 'identify'
+check_in_path 'xrandr'
+
+MONITOR_WIDTH=$(
+    xrandr |
+    fgrep '*+' |
+    tail -1 |
+    awk '{print $1;}' |
+    cut -f1 -d'x'
+)
 
 # load arrays with flashcards definitions
 for i in ./arrays/*; do source $i; done
@@ -45,27 +54,28 @@ for i in ./arrays/*; do source $i; done
 while getopts ':hkjigpeb:f' opt; do
     case $opt in
         h)
-            rand_char=$(echo ${!hiragana[@]} | tr ' ' '\n' | shuf -n1)
+            rand_char=$( printf '%s\n' "${!hiragana[@]}" | shuf -n1)
             rand_desc=${hiragana[$rand_char]}
             ;;
         k)
-            rand_char=$(echo ${!katakana[@]} | tr ' ' '\n' | shuf -n1)
+            rand_char=$( printf '%s\n' "${!katakana[@]}" | shuf -n1)
             rand_desc=${katakana[$rand_char]}
             ;;
         j)
-            rand_char=$(echo ${!kanji[@]} | tr ' ' '\n' | shuf -n1)
+            rand_char=$( printf '%s\n' "${!kanji[@]}" | shuf -n1)
             rand_desc=${kanji[$rand_char]}
             ;;
         g)
-            rand_char=$(echo ${!go_terms[@]} | tr ' ' '\n' | shuf -n1)
+            rand_char=$( printf '%s\n' "${!go_terms[@]}" | shuf -n1)
             rand_desc=${go_terms[$rand_char]}
             ;;
         p)
-            rand_char=$(echo ${!j_phrases[@]} | tr ' ' '\n' | shuf -n1)
+            rand_char=$( printf '%s\n' "${!j_phrases[@]}" | shuf -n1)
             rand_desc=${j_phrases[$rand_char]}
             ;;
         e)
-            rand_char=$(echo ${!eng_phrases[@]} | tr ' ' '\n' | shuf -n1)
+            FONT_PATH='/usr/share/fonts/TTF/zektonbi.ttf'
+            rand_char=$( printf '%s\n' "${!eng_phrases[@]}" | shuf -n1 )
             rand_desc=${eng_phrases[$rand_char]}
             ;;
         b)  
@@ -75,9 +85,15 @@ while getopts ':hkjigpeb:f' opt; do
             ;;
         f)
             [[ -f $HOME/.fehbg ]] && {
-                current_wallpaper=$(cat $HOME/.fehbg | cut -f2 -d"'")
+                # i hate the code below...
+                array_feh_bg=( $( cat $HOME/.fehbg) )
+                last_element_index=$((${#array_feh_bg} - 1))
+                current_wallpaper="${array_feh_bg[${last_element_index}]}"
+                current_wallpaper=${current_wallpaper//\'/}
                 [[ -f $current_wallpaper ]] && {
-                    IMAGE_SOURCE="${current_wallpaper}"
+                    # unset the last element of the feh array
+                    unset array_feh_bg[$last_element_index]
+                    IMAGE_SOURCE=${current_wallpaper}
                 }
             }
             ;;
@@ -102,9 +118,14 @@ done
 
 # if any image was provided calculate the font size from there
 [[ ! -z $IMAGE_SOURCE ]] && {
-    WIDTH=$(identify $IMAGE_SOURCE | cut -f3 -d ' ' | cut -f2 -d'x')
-    BPOINTSIZE=$((WIDTH/6))  # some arbitrary value
-    SPOINTSIZE=$((WIDTH/35)) # some arbitrary value
+    IMAGE_WIDTH=$(
+       identify "${IMAGE_SOURCE}" |
+       cut -f3 -d' ' |
+       cut -f1 -d'x' 
+    )
+    [[ $IMAGE_WIDTH -ge $MONITOR_WIDTH ]] && WIDTH=$IMAGE_WIDTH || WIDTH=$MONITOR_WIDTH
+    BPOINTSIZE=$((WIDTH/12))  # some arbitrary value
+    SPOINTSIZE=$((WIDTH/60)) # some arbitrary value
 }
 
 BACKGROUND=${IMAGE_SOURCE:-'-size 1280x800 xc:black'}
@@ -116,11 +137,11 @@ convert ${BACKGROUND} \
     -interline-spacing 5 -interword-spacing 17 -kerning 0 \
     -font $FONT_PATH \
     -pointsize $BPOINTSIZE \
-    -draw 'gravity center fill black text 3,3 "'$rand_char'"' \
-    -draw 'gravity center fill white text 0,0 "'$rand_char'"' \
+    -draw 'gravity center fill black text 3,3 "'"${rand_char}"'"' \
+    -draw 'gravity center fill white text 0,0 "'"${rand_char}"'"' \
     -pointsize $SPOINTSIZE \
     -draw 'gravity center fill black text 2,'$(((BPOINTSIZE/2)+(BPOINTSIZE/3)+2))' "'"${rand_desc}"'"' \
     -draw 'gravity center fill white text 0,'$(((BPOINTSIZE/2)+(BPOINTSIZE/3)))' "'"${rand_desc}"'"' \
     /tmp/wp.flash.png
 
-DISPLAY=:0.0 feh --no-fehbg --bg-fill /tmp/wp.flash.png
+DISPLAY=:0.0 ${array_feh_bg[@]} --no-fehbg /tmp/wp.flash.png
