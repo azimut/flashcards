@@ -3,8 +3,8 @@
 
 # Default font size, this value is later changed according to the image size
 # however it will be used for the default black background
-BPOINTSIZE=400
-SPOINTSIZE=40
+DEFAULT_WIDTH=1280
+WIDTH=$DEFAULT_WIDTH
 array_feh_bg=( feh --bg-fill )
 # Make sure to have your fonts installed here
 FONT_PATH='/usr/share/fonts/TTF/sazanami-gothic.ttf'
@@ -124,9 +124,10 @@ done
        cut -f1 -d'x' 
     )
     [[ $IMAGE_WIDTH -ge $MONITOR_WIDTH ]] && WIDTH=$IMAGE_WIDTH || WIDTH=$MONITOR_WIDTH
-    BPOINTSIZE=$((WIDTH/12))  # some arbitrary value
-    SPOINTSIZE=$((WIDTH/60)) # some arbitrary value
 }
+
+BPOINTSIZE=$((WIDTH/12))  # some arbitrary value
+SPOINTSIZE=$((WIDTH/60)) # some arbitrary value
 
 BACKGROUND=${IMAGE_SOURCE:-'-size 1280x800 xc:black'}
 
