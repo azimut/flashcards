@@ -20,6 +20,8 @@ Usage: $0 [-hkj] [-b]
 -p japanese phrases
 -e eng phrases
 -b use the provided image as background instead of the default
+-S Set font size ratio of main font
+-s Set font size ratio of secondary font
 EOF
 }
 
@@ -51,7 +53,7 @@ MONITOR_WIDTH=$(
 # load arrays with flashcards definitions
 for i in ./arrays/*; do source $i; done
 
-while getopts ':hkjigpeb:f' opt; do
+while getopts ':hkjigpeb:fS:s:' opt; do
     case $opt in
         h)
             rand_char=$( printf '%s\n' "${!hiragana[@]}" | shuf -n1)
@@ -82,6 +84,12 @@ while getopts ':hkjigpeb:f' opt; do
             [[ -f $OPTARG ]] && {
                 IMAGE_SOURCE=$OPTARG
             }
+            ;;
+        s)
+            sSIZE=$OPTARG
+            ;;
+        S)
+            SSIZE=$OPTARG
             ;;
         f)
             [[ -f $HOME/.fehbg ]] && {
@@ -126,8 +134,8 @@ done
     [[ $IMAGE_WIDTH -ge $MONITOR_WIDTH ]] && WIDTH=$IMAGE_WIDTH || WIDTH=$MONITOR_WIDTH
 }
 
-BPOINTSIZE=$((WIDTH/12))  # some arbitrary value
-SPOINTSIZE=$((WIDTH/60)) # some arbitrary value
+BPOINTSIZE=$((WIDTH/${SSIZE:-15}))  # some arbitrary value
+SPOINTSIZE=$((WIDTH/${sSIZE:-60})) # some arbitrary value
 
 BACKGROUND=${IMAGE_SOURCE:-'-size 1280x800 xc:black'}
 
