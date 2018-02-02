@@ -7,7 +7,7 @@ DEFAULT_WIDTH=1280
 WIDTH=$DEFAULT_WIDTH
 array_feh_bg=( feh --bg-fill )
 # Make sure to have your fonts installed here
-FONT_PATH='/usr/share/fonts/TTF/sazanami-gothic.ttf'
+FONT_PATH='/usr/share/fonts/sazanami/sazanami-gothic.ttf'
 #FONT_PATH='/usr/share/fonts/TTF/sazanami-mincho.ttf'
 
 echoerr() { echo "$@" 1>&2; }
