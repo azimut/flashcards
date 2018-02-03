@@ -14,13 +14,11 @@ echoerr() { echo "$@" 1>&2; }
 usage(){
     cat <<EOF
 Usage: $0 [-a ARRAYFILE] [-b IMAGEPATH][-f] [-F TTFFONT] [-s#][-S#]
+
 -a get "things" asocciative array from file
-
 -F use the ttf font provided
-
 -b use the provided image as background instead of the default
 -f read background image from ~/.fehbg
-
 -S Set font size ratio of main font
 -s Set font size ratio of secondary font
 EOF
