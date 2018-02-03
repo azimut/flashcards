@@ -13,13 +13,17 @@ FONT_PATH='/usr/share/fonts/sazanami/sazanami-gothic.ttf'
 echoerr() { echo "$@" 1>&2; }
 usage(){
     cat <<EOF
-Usage: $0 [-hkj] [-b]
+Usage: $0 [-hkjpe] [-b IMAGEPATH][-f] [-s#][-S#]
+
 -h use the hiragana character set
 -k use the katakana character set
 -j use the kanji values
 -p japanese phrases
 -e eng phrases
+
 -b use the provided image as background instead of the default
+-f read background image from ~/.fehbg
+
 -S Set font size ratio of main font
 -s Set font size ratio of secondary font
 EOF
@@ -94,10 +98,10 @@ while getopts ':hkjigpeb:fS:s:' opt; do
         f)
             [[ -f $HOME/.fehbg ]] && {
                 # i hate the code below...
-                array_feh_bg=( $( cat $HOME/.fehbg) )
-                last_element_index=$((${#array_feh_bg} - 1))
+                array_feh_bg=( $( cat $HOME/.fehbg | tail -1) )
+                last_element_index=$((${#array_feh_bg[@]} - 1))
                 current_wallpaper="${array_feh_bg[${last_element_index}]}"
-                current_wallpaper=${current_wallpaper//\'/}
+                current_wallpaper="${current_wallpaper//\'/}"
                 [[ -f $current_wallpaper ]] && {
                     # unset the last element of the feh array
                     unset array_feh_bg[$last_element_index]
@@ -134,8 +138,8 @@ done
     [[ $IMAGE_WIDTH -ge $MONITOR_WIDTH ]] && WIDTH=$IMAGE_WIDTH || WIDTH=$MONITOR_WIDTH
 }
 
-BPOINTSIZE=$((WIDTH/${SSIZE:-15}))  # some arbitrary value
-SPOINTSIZE=$((WIDTH/${sSIZE:-60})) # some arbitrary value
+BPOINTSIZE=$((WIDTH/${SSIZE:-15}))
+SPOINTSIZE=$((WIDTH/${sSIZE:-60}))
 
 BACKGROUND=${IMAGE_SOURCE:-'-size 1280x800 xc:black'}
 

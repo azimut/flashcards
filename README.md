@@ -1,7 +1,7 @@
 flashcards
 ==========
 
-Writes text or letters over your current feh wallpaper. By default this does not update .fehrc with the new image so you can try new flashcards.
+Writes text or letters over your current an image and sets the wallpaper with `feh`. By default this does not update .fehbg with the new image so you can try new flashcards.
 
 ## Usage:
 Get help:
@@ -21,4 +21,9 @@ $ bash do.sh -h -b ~/wallpaper.jpg
 Set hiragana with provided background and size for bigger font to 2 (is a ration of sorts for now).
 ```
 $ bash do.sh -h -b ~/wallpaper.jpg -S 5
+```
+
+Set hiragana with feh options and wallpaper set on .fehbg
+```
+$ bash do.sh -h -f -S 5
 ```
