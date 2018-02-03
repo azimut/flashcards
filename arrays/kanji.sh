@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Reference: http://japanese.about.com/od/kan2/a/100kanji.htm
-declare -A kanji
-kanji=(
+declare -A things
+things=(
     [日]='sun'
     [一]='one'
     [大]='big'
@@ -104,4 +104,3 @@ kanji=(
     [不]='not, un~, in~'
     [党]='political party'
 )
-

@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Reference: http://symbolcodes.tlt.psu.edu/bylanguage/japanesechartkatakana.html
-declare -A katakana
-katakana=(
+declare -A things
+things=(
     [ア]='a'  [イ]='i'  [ウ]='u'  [エ]='e'  [オ]='o'
     [カ]='ka' [キ]='ki' [ク]='ku' [ケ]='ke' [コ]='ko'
     [ガ]='ga' [ギ]='gi' [グ]='gu' [ゲ]='ge' [ゴ]='go'
@@ -21,4 +21,3 @@ katakana=(
     [ン]='n     '
     [ヴ]='vu' [ヷ]='va' [ヸ]='vi' [ヹ]='ve' [ヺ]='vo'
 )
-

@@ -1,6 +1,6 @@
 #!/bin/bash
-declare -A go_terms
-go_terms=(
+declare -A things
+things=(
     ['Aji']='A weakness that is left behind in the opponent s position.
 Has been translated as flavor,  aftertaste,  and \"funny business\".
 Typically it can be exploited in more than one way.'
@@ -101,5 +101,3 @@ context that will normally either establish a good shape or force the opponent i
 meaning moves that approach fairly stable territory,
 typically enlarging one s own territory while reducing the opponent s.'
 )
-
-

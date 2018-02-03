@@ -13,14 +13,8 @@ FONT_PATH='/usr/share/fonts/sazanami/sazanami-gothic.ttf'
 echoerr() { echo "$@" 1>&2; }
 usage(){
     cat <<EOF
-Usage: $0 [-hkjpe] [-b IMAGEPATH][-f] [-F TTFFONT] [-s#][-S#]
-
--h use the hiragana character set
--k use the katakana character set
--j use the kanji values
--p japanese phrases
--e eng phrases
--g use goterms
+Usage: $0 [-a ARRAYFILE] [-b IMAGEPATH][-f] [-F TTFFONT] [-s#][-S#]
+-a get "things" asocciative array from file
 
 -F use the ttf font provided
 
@@ -57,34 +51,14 @@ MONITOR_WIDTH=$(
     cut -f1 -d'x'
 )
 
-# load arrays with flashcards definitions
-for i in ./arrays/*; do source $i; done
-
-while getopts ':hkjigpeb:fS:s:F:' opt; do
+while getopts ':a:b:fS:s:F:' opt; do
     case $opt in
-        h)
-            rand_char=$( printf '%s\n' "${!hiragana[@]}" | shuf -n1)
-            rand_desc=${hiragana[$rand_char]}
-            ;;
-        k)
-            rand_char=$( printf '%s\n' "${!katakana[@]}" | shuf -n1)
-            rand_desc=${katakana[$rand_char]}
-            ;;
-        j)
-            rand_char=$( printf '%s\n' "${!kanji[@]}" | shuf -n1)
-            rand_desc=${kanji[$rand_char]}
-            ;;
-        g)
-            rand_char=$( printf '%s\n' "${!go_terms[@]}" | shuf -n1)
-            rand_desc=${go_terms[$rand_char]}
-            ;;
-        p)
-            rand_char=$( printf '%s\n' "${!j_phrases[@]}" | shuf -n1)
-            rand_desc=${j_phrases[$rand_char]}
-            ;;
-        e)
-            rand_char=$( printf '%s\n' "${!eng_phrases[@]}" | shuf -n1 )
-            rand_desc=${eng_phrases[$rand_char]}
+        a)
+            # Get the things
+            full_path=$(readlink -e $OPTARG)
+            [[ -f $full_path ]] && source $full_path
+            rand_char=$( printf '%s\n' "${!things[@]}" | shuf -n1 )
+            rand_desc=${things[$rand_char]}
             ;;
         F)
             [[ -f $OPTARG && $OPTARG =~ .*ttf ]] && FONT_PATH=$OPTARG

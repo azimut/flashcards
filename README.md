@@ -10,20 +10,20 @@ $ bash do.sh
 ```
 Set hiragana with a black background:
 ```
-$ bash do.sh -h
+$ bash do.sh -a array/hiragana.sh
 ```
 
 Set hiragana with provide background:
 ```
-$ bash do.sh -h -b ~/wallpaper.jpg
+$ bash do.sh -a array/hiragana.sh -b ~/wallpaper.jpg
 ```
 
 Set hiragana with provided background and size for bigger font to 2 (is a ration of sorts for now).
 ```
-$ bash do.sh -h -b ~/wallpaper.jpg -S 5
+$ bash do.sh -a array/hiragana.sh -b ~/wallpaper.jpg -S 5
 ```
 
 Set hiragana with feh options and wallpaper set on .fehbg
 ```
-$ bash do.sh -h -f -S 5
+$ bash do.sh -a array/hiragana.sh -f -S 5
 ```

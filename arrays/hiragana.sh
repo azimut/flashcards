@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Reference: http://symbolcodes.tlt.psu.edu/bylanguage/japanesecharthiragana.html
-declare -A hiragana
-hiragana=(
+declare -A things
+things=(
     [あ]='a'  [い]='i'   [う]='u'  [え]='e'  [お]='o'
     [か]='ka' [き]='ki'  [く]='ku' [け]='ke' [こ]='ko'
     [が]='ga' [ぎ]='gi'  [ぐ]='gu' [げ]='ge' [ご]='go'
@@ -21,4 +21,3 @@ hiragana=(
     [ん]='n'
     [ゔ]='vu'
 )
-
