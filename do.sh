@@ -51,7 +51,7 @@ check_in_path 'xrandr'
 
 MONITOR_WIDTH=$(
     xrandr |
-    fgrep '*+' |
+    grep -F '*+' |
     tail -1 |
     awk '{print $1;}' |
     cut -f1 -d'x'
@@ -90,14 +90,12 @@ while getopts ':hkjigpeb:fS:s:F:' opt; do
             [[ -f $OPTARG && $OPTARG =~ .*ttf ]] && FONT_PATH=$OPTARG
             ;;
         b)  
-            [[ -f $OPTARG ]] && {
-                IMAGE_SOURCE=$OPTARG
-            }
+            [[ -f $OPTARG ]] && IMAGE_SOURCE=$OPTARG
             ;;
         f)
             [[ -f $HOME/.fehbg ]] && {
                 # Take the feh options
-                array_feh_bg=( $( cat $HOME/.fehbg | tail -1) )
+                array_feh_bg=( $( tail -n1 "$HOME"/.fehbg ) )
                 last_element_index=$((${#array_feh_bg[@]} - 1))
                 current_wallpaper="${array_feh_bg[${last_element_index}]}"
                 current_wallpaper="${current_wallpaper//\'/}"
@@ -150,11 +148,11 @@ BACKGROUND=${IMAGE_SOURCE:-'-size 1280x800 xc:black'}
 
 echo $BPOINTSIZE
 echo $SPOINTSIZE
-echo $FONT_PATH
+echo "$FONT_PATH"
 
-convert ${BACKGROUND} \
+convert "${BACKGROUND}" \
     -interline-spacing 5 -interword-spacing 17 -kerning 0 \
-    -font $FONT_PATH \
+    -font "${FONT_PATH}" \
     -pointsize $BPOINTSIZE \
     -draw 'gravity center fill black text 3,3 "'"${rand_char}"'"' \
     -draw 'gravity center fill white text 0,0 "'"${rand_char}"'"' \
@@ -163,4 +161,4 @@ convert ${BACKGROUND} \
     -draw 'gravity center fill white text 0,'$(((BPOINTSIZE/2)+(BPOINTSIZE/3)))' "'"${rand_desc}"'"' \
     /tmp/wp.flash.png
 
-DISPLAY=:0.0 ${array_feh_bg[@]} --no-fehbg /tmp/wp.flash.png
+DISPLAY=:0.0 "${array_feh_bg[@]}" --no-fehbg /tmp/wp.flash.png
