@@ -13,13 +13,16 @@ FONT_PATH='/usr/share/fonts/sazanami/sazanami-gothic.ttf'
 echoerr() { echo "$@" 1>&2; }
 usage(){
     cat <<EOF
-Usage: $0 [-hkjpe] [-b IMAGEPATH][-f] [-s#][-S#]
+Usage: $0 [-hkjpe] [-b IMAGEPATH][-f] [-F TTFFONT] [-s#][-S#]
 
 -h use the hiragana character set
 -k use the katakana character set
 -j use the kanji values
 -p japanese phrases
 -e eng phrases
+-g use goterms
+
+-F use the ttf font provided
 
 -b use the provided image as background instead of the default
 -f read background image from ~/.fehbg
@@ -57,7 +60,7 @@ MONITOR_WIDTH=$(
 # load arrays with flashcards definitions
 for i in ./arrays/*; do source $i; done
 
-while getopts ':hkjigpeb:fS:s:' opt; do
+while getopts ':hkjigpeb:fS:s:F:' opt; do
     case $opt in
         h)
             rand_char=$( printf '%s\n' "${!hiragana[@]}" | shuf -n1)
@@ -80,24 +83,20 @@ while getopts ':hkjigpeb:fS:s:' opt; do
             rand_desc=${j_phrases[$rand_char]}
             ;;
         e)
-            FONT_PATH='/usr/share/fonts/TTF/zektonbi.ttf'
             rand_char=$( printf '%s\n' "${!eng_phrases[@]}" | shuf -n1 )
             rand_desc=${eng_phrases[$rand_char]}
+            ;;
+        F)
+            [[ -f $OPTARG && $OPTARG =~ .*ttf ]] && FONT_PATH=$OPTARG
             ;;
         b)  
             [[ -f $OPTARG ]] && {
                 IMAGE_SOURCE=$OPTARG
             }
             ;;
-        s)
-            sSIZE=$OPTARG
-            ;;
-        S)
-            SSIZE=$OPTARG
-            ;;
         f)
             [[ -f $HOME/.fehbg ]] && {
-                # i hate the code below...
+                # Take the feh options
                 array_feh_bg=( $( cat $HOME/.fehbg | tail -1) )
                 last_element_index=$((${#array_feh_bg[@]} - 1))
                 current_wallpaper="${array_feh_bg[${last_element_index}]}"
@@ -108,6 +107,12 @@ while getopts ':hkjigpeb:fS:s:' opt; do
                     IMAGE_SOURCE=${current_wallpaper}
                 }
             }
+            ;;
+        s)
+            sSIZE=$OPTARG
+            ;;
+        S)
+            SSIZE=$OPTARG
             ;;
         \?)
             echoerr 'Error: Not implemented!'
@@ -145,6 +150,7 @@ BACKGROUND=${IMAGE_SOURCE:-'-size 1280x800 xc:black'}
 
 echo $BPOINTSIZE
 echo $SPOINTSIZE
+echo $FONT_PATH
 
 convert ${BACKGROUND} \
     -interline-spacing 5 -interword-spacing 17 -kerning 0 \
