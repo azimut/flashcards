@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -exuo pipefail
+
 # Reference: https://github.com/taeram/zen-wallpaper
 
 # Default font size, this value is later changed according to the image size
@@ -54,14 +57,14 @@ while getopts ':a:b:fS:s:F:' opt; do
         a)
             # Get the things
             full_path=$(readlink -e $OPTARG)
-            [[ -f $full_path ]] && source $full_path
+            [[ -f $full_path ]] && source ${full_path}
             rand_char=$( printf '%s\n' "${!things[@]}" | shuf -n1 )
-            rand_desc=${things[$rand_char]}
+            rand_desc=${things[${rand_char}]}
             ;;
         F)
             [[ -f $OPTARG && $OPTARG =~ .*ttf ]] && FONT_PATH=$OPTARG
             ;;
-        b)  
+        b)
             [[ -f $OPTARG ]] && IMAGE_SOURCE=$OPTARG
             ;;
         f)
@@ -73,7 +76,7 @@ while getopts ':a:b:fS:s:F:' opt; do
                 current_wallpaper="${current_wallpaper//\'/}"
                 [[ -f $current_wallpaper ]] && {
                     # unset the last element of the feh array
-                    unset array_feh_bg[$last_element_index]
+                    unset array_feh_bg[${last_element_index}]
                     IMAGE_SOURCE=${current_wallpaper}
                 }
             }
@@ -99,17 +102,17 @@ done
 
 # check if some of the mandatory options was used (flashcard)
 [[ -z $rand_char || -z $rand_desc ]] && {
+    echoerr "Error: no rand_"
     usage
     exit 1
 }
 
 # if any image was provided calculate the font size from there
-[[ ! -z $IMAGE_SOURCE ]] && {
+[[ -n $IMAGE_SOURCE ]] && {
     IMAGE_WIDTH=$(
        identify "${IMAGE_SOURCE}" |
        cut -f3 -d' ' |
-       cut -f1 -d'x' 
-    )
+       cut -f1 -d'x')
     [[ $IMAGE_WIDTH -ge $MONITOR_WIDTH ]] && WIDTH=$IMAGE_WIDTH || WIDTH=$MONITOR_WIDTH
 }
 
